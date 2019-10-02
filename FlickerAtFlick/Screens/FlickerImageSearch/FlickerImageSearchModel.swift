@@ -8,11 +8,11 @@
 
 import Foundation
 
-struct FlickerImageSearchModel: Decodable {
+struct FlickerImageSearchModel: Codable {
     
     let photos: FlickerImageSearchPageModel
     
-    struct FlickerImageSearchPageModel: Decodable {
+    struct FlickerImageSearchPageModel: Codable {
         let page: Int
         let pages: Int
         let perpage: Int

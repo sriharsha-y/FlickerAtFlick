@@ -15,8 +15,7 @@ class FlickerImageSearchController: UIViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
     
-    private let viewModel = FlickerImageSearchViewModel()
-    
+    private let viewModel = FlickerImageSearchViewModel(router: Router())
     
     lazy var searchBar: UISearchBar = {
         let s = UISearchBar()
@@ -24,6 +23,8 @@ class FlickerImageSearchController: UIViewController {
         s.delegate = self
         s.tintColor = .white
         s.barStyle = .default
+        s.backgroundImage = UIImage()
+        s.barTintColor = UIColor(red: 235/255, green: 235/255, blue: 242/255, alpha: 1)
         s.sizeToFit()
         return s
     }()
@@ -33,13 +34,15 @@ class FlickerImageSearchController: UIViewController {
         self.initialUISetup()
     }
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
     fileprivate func initialUISetup() {
         let layout = self.collectionView.collectionViewLayout as! UICollectionViewFlowLayout
         layout.sectionHeadersPinToVisibleBounds = true
-        self.viewModel.notifyCollectionReload = {[unowned self] in
-            self.collectionView.reloadData()
-        }
         self.registerCollectionReusableViews()
+        self.bindListeners()
     }
     
     fileprivate func registerCollectionReusableViews() {
@@ -47,24 +50,18 @@ class FlickerImageSearchController: UIViewController {
         self.collectionView.register(UICollectionViewCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerCellId)
     }
     
-//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//
-//    }
-    
-//    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-//        
-//    }
-    
-//    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-//        let currentOffset = scrollView.contentOffset.y
-//        let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
-//
-//        // Change 10.0 to adjust the distance from bottom
-//        if maximumOffset - currentOffset <= 200.0 {
-//            self.viewModel.requestNextPage()
-//        }
-//    }
-
+    fileprivate func bindListeners() {
+        self.viewModel.notifyCollectionReload = {[unowned self] in
+            self.collectionView.reloadData()
+        }
+        self.viewModel.notifyErrors = {[unowned self] message in
+            let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler:{ _ in
+                self.searchBar.text = ""
+            }))
+            self.present(alert, animated: true, completion: nil)
+        }
+    }
 }
 
 extension  FlickerImageSearchController: UICollectionViewDataSource {
@@ -107,7 +104,7 @@ extension FlickerImageSearchController: UICollectionViewDelegate {
 extension FlickerImageSearchController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: view.frame.width, height: 40)
+        return CGSize(width: view.frame.width, height: 60)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -118,4 +115,11 @@ extension FlickerImageSearchController: UICollectionViewDelegateFlowLayout {
 
 extension FlickerImageSearchController: UISearchBarDelegate {
     
+    // TODO: Get search results based on each charcter entered by user (with certain threshold set likely 3 characters)
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {}
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        self.view.endEditing(true)
+        self.viewModel.searchFor(image: self.searchBar.text)
+    }
 }

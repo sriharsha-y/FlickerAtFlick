@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct FlickerImageModel: Decodable {
+struct FlickerImageModel: Codable {
     let id: String
     let owner: String?
     let secret: String

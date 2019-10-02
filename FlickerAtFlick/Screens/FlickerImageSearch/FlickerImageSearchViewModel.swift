@@ -8,18 +8,43 @@
 
 import Foundation
 
-class FlickerImageSearchViewModel {
+class FlickerImageSearchViewModel<T: NetworkRouter> {
     
     
-    private var _flickerImageSearchModel = FlickerImageSearchModel(photos: FlickerImageSearchModel.FlickerImageSearchPageModel(page: 1, pages: 0, perpage: 0, total: "0", photo: []))
+    // Private Properties
+    private lazy var _flickerImageSearchModel = {
+        return FlickerImageSearchModel(photos: FlickerImageSearchModel.FlickerImageSearchPageModel(page: 1, pages: 0, perpage: 0, total: "0", photo: []))
+    }()
+    private var imageToSearch: String = "" {
+        didSet {
+            self.resetFLickerImageSearchModel()
+            self.notifyCollectionReload?()
+        }
+    }
+    private var router: T!
     
+    // Public Properties
     var flickerImageSearchModel: FlickerImageSearchModel {
         return _flickerImageSearchModel
     }
     
-    var notifyCollectionReload:(()->())?
     
-    init() {
+    // Callbacks
+    var notifyCollectionReload:(()->())?
+    var notifyErrors: ((String) -> ())?
+    
+    
+    init(router: T) {
+        self.router = router
+    }
+    
+    
+    func searchFor(image: String?) {
+        guard let imageString = image, let urlSafeImageString = imageString.urlSafeString() else {
+            self.notifyErrors?("Please use proper search term.")
+            return
+        }
+        self.imageToSearch = urlSafeImageString
         self.requestNextPage()
     }
     
@@ -33,20 +58,27 @@ class FlickerImageSearchViewModel {
     }
     
     private func requestImages(pageNumber: Int) {
-        Client().requestResource(urlString: "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=3e7cc266ae2b0e0d78e279ce8e361736&%20format=json&nojsoncallback=1&safe_search=1&text=kittens&page=\(pageNumber)", dataHandler: { (data) in
-            if let model = try? JSONDecoder().decode(FlickerImageSearchModel.self, from: data) {
-                self.appendNewResults(model: model)
+        self.router.request(ImagesAPI.searchImage(text: self.imageToSearch, pageNumber: pageNumber)) {[weak self] (data, response, error) in
+            guard let weakSelf = self else {return}
+            if error != nil {}
+            guard let data = data, let model = try? JSONDecoder().decode(FlickerImageSearchModel.self, from: data) else {return}
+            DispatchQueue.main.async {
+                weakSelf.appendNewResults(model: model)
             }
-        }) { (error) in
-            print(error.localizedDescription)
         }
     }
     
     private func appendNewResults(model: FlickerImageSearchModel) {
         var photosArray = self._flickerImageSearchModel.photos.photo
         photosArray.append(contentsOf: model.photos.photo)
-        print(photosArray.count)
         self._flickerImageSearchModel = FlickerImageSearchModel(photos: FlickerImageSearchModel.FlickerImageSearchPageModel(page: model.photos.page, pages: model.photos.pages, perpage: model.photos.perpage, total: model.photos.total, photo: photosArray))
         self.notifyCollectionReload?()
+        if self.flickerImageSearchModel.photos.total == "0" {
+            self.notifyErrors?("No images found. Try another search term.")
+        }
+    }
+    
+    private func resetFLickerImageSearchModel() {
+        self._flickerImageSearchModel = FlickerImageSearchModel(photos: FlickerImageSearchModel.FlickerImageSearchPageModel(page: 1, pages: 0, perpage: 0, total: "0", photo: []))
     }
 }

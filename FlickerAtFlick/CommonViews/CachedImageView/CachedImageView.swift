@@ -18,7 +18,7 @@ class CachedImageView: UIImageView {
     func loadImageWithUrl(_ url: URL) {
         
         // setup activityIndicator...
-        self.activityIndicator.color = .darkGray
+        self.activityIndicator.color = .white
         self.addSubview(activityIndicator)
         self.activityIndicator.translatesAutoresizingMaskIntoConstraints = false
         self.activityIndicator.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
@@ -34,33 +34,78 @@ class CachedImageView: UIImageView {
             return
         }
         
-        // image is not available in cache.. so retrieving it from url...
-        URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) in
-            
+        guard let url = self.imageURL else {
+            self.activityIndicator.stopAnimating()
+            self.setNoImage()
+            return
+        }
+        
+        let router = Router()
+        router.request(ImagesAPI.downloadImage(url: url)) { (data, response, error) in
             if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode != 200 {
-                DispatchQueue.main.async(execute: {
+                DispatchQueue.main.async {
                     self.setNoImage()
-                })
+                }
             }
-            
             if error != nil {
                 print(error as Any)
-                DispatchQueue.main.async(execute: {
+                DispatchQueue.main.async {
                     self.setNoImage()
-                })
-                return
+                }
             }
-            
-            DispatchQueue.main.async(execute: {
-                if let unwrappedData = data, let imageToCache = UIImage(data: unwrappedData) {
+            DispatchQueue.main.async {
+                if let data = data, let imageToCache = UIImage(data: data) {
                     if self.imageURL == url {
                         self.image = imageToCache
                     }
                     imageCache.setObject(imageToCache, forKey: url as AnyObject)
                 }
                 self.activityIndicator.stopAnimating()
-            })
-        }).resume()
+            }
+        }
+        // image is not available in cache.. so retrieving it from url...
+//        Client().requestResource(urlString: imageUrl, dataHandler: {[unowned self] data in
+//            if let imageToCache = UIImage(data: data) {
+//                if self.imageURL == url {
+//                    self.image = imageToCache
+//                }
+//                imageCache.setObject(imageToCache, forKey: url as AnyObject)
+//            }
+//            self.activityIndicator.stopAnimating()
+//        }, responseHandle: {[unowned self] response in
+//            if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode != 200 {
+//                self.setNoImage()
+//            }
+//        }) {[unowned self] error in
+//            print(error as Any)
+//            self.setNoImage()
+//        }
+//        URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) in
+//
+//            if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode != 200 {
+//                DispatchQueue.main.async(execute: {
+//                    self.setNoImage()
+//                })
+//            }
+//
+//            if error != nil {
+//                print(error as Any)
+//                DispatchQueue.main.async(execute: {
+//                    self.setNoImage()
+//                })
+//                return
+//            }
+//
+//            DispatchQueue.main.async(execute: {
+//                if let unwrappedData = data, let imageToCache = UIImage(data: unwrappedData) {
+//                    if self.imageURL == url {
+//                        self.image = imageToCache
+//                    }
+//                    imageCache.setObject(imageToCache, forKey: url as AnyObject)
+//                }
+//                self.activityIndicator.stopAnimating()
+//            })
+//        }).resume()
     }
     
     private func setNoImage() {
