@@ -2,6 +2,8 @@
 iOS App to display flicker images.
 
 
+![alt text](https://i.ibb.co/FbG3vws/Screenshot-2019-10-02-at-9-02-04-PM.png)
+
 <b>Whats covered?</b>
   1. Basic search with Flicker API
   2. Display images in 3 column UICollectionView (Vertical scrolling)
