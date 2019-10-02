@@ -58,7 +58,6 @@ class FlickerImageSearchViewModel<T: NetworkRouter> {
     }
     
     private func requestImages(pageNumber: Int) {
-        print(self.imageToSearch)
         self.router.request(ImagesAPI.searchImage(text: self.imageToSearch, pageNumber: pageNumber)) {[weak self] (data, response, error) in
             guard let weakSelf = self else {return}
             if error != nil {}
