@@ -40,11 +40,11 @@ class FlickerImageSearchViewModel<T: NetworkRouter> {
     
     
     func searchFor(image: String?) {
-        guard let imageString = image, let urlSafeImageString = imageString.urlSafeString() else {
+        guard let imageString = image else {
             self.notifyErrors?("Please use proper search term.")
             return
         }
-        self.imageToSearch = urlSafeImageString
+        self.imageToSearch = imageString
         self.requestNextPage()
     }
     
@@ -58,6 +58,7 @@ class FlickerImageSearchViewModel<T: NetworkRouter> {
     }
     
     private func requestImages(pageNumber: Int) {
+        print(self.imageToSearch)
         self.router.request(ImagesAPI.searchImage(text: self.imageToSearch, pageNumber: pageNumber)) {[weak self] (data, response, error) in
             guard let weakSelf = self else {return}
             if error != nil {}

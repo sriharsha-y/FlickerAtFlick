@@ -24,7 +24,6 @@
 		0E33D52E233F5B010079D637 /* FlickerImageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E33D52D233F5B010079D637 /* FlickerImageModel.swift */; };
 		0E33D530233F5C210079D637 /* FlickerImageSearchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E33D52F233F5C210079D637 /* FlickerImageSearchModel.swift */; };
 		0E33D535233F6C670079D637 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E33D534233F6C670079D637 /* Utils.swift */; };
-		0E33D53923445ACC0079D637 /* String+Encoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E33D53823445ACC0079D637 /* String+Encoding.swift */; };
 		0E33D54123447AFF0079D637 /* EndPointType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E33D54023447AFF0079D637 /* EndPointType.swift */; };
 		0E33D54323447B910079D637 /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E33D54223447B910079D637 /* HTTPMethod.swift */; };
 		0E33D54523447C090079D637 /* HTTPTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E33D54423447C090079D637 /* HTTPTask.swift */; };
@@ -81,7 +80,6 @@
 		0E33D52D233F5B010079D637 /* FlickerImageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlickerImageModel.swift; sourceTree = "<group>"; };
 		0E33D52F233F5C210079D637 /* FlickerImageSearchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlickerImageSearchModel.swift; sourceTree = "<group>"; };
 		0E33D534233F6C670079D637 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
-		0E33D53823445ACC0079D637 /* String+Encoding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Encoding.swift"; sourceTree = "<group>"; };
 		0E33D54023447AFF0079D637 /* EndPointType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndPointType.swift; sourceTree = "<group>"; };
 		0E33D54223447B910079D637 /* HTTPMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
 		0E33D54423447C090079D637 /* HTTPTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPTask.swift; sourceTree = "<group>"; };
@@ -241,7 +239,6 @@
 			isa = PBXGroup;
 			children = (
 				0E33D521233F44470079D637 /* UICollectionView+CellRegistration.swift */,
-				0E33D53823445ACC0079D637 /* String+Encoding.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -485,7 +482,6 @@
 				0E33D52A233F4A980079D637 /* CachedImageView.swift in Sources */,
 				0E33D51F233F32BE0079D637 /* FlickerImageSearchController.swift in Sources */,
 				0E33D55323448E4E0079D637 /* NetworkManager.swift in Sources */,
-				0E33D53923445ACC0079D637 /* String+Encoding.swift in Sources */,
 				0E33D530233F5C210079D637 /* FlickerImageSearchModel.swift in Sources */,
 				0E33D54123447AFF0079D637 /* EndPointType.swift in Sources */,
 				0E33D52C233F5AE30079D637 /* FlickerImageSearchViewModel.swift in Sources */,
