@@ -34,10 +34,6 @@ class FlickerImageSearchController: UIViewController {
         self.initialUISetup()
     }
     
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
-    }
-    
     fileprivate func initialUISetup() {
         let layout = self.collectionView.collectionViewLayout as! UICollectionViewFlowLayout
         layout.sectionHeadersPinToVisibleBounds = true
